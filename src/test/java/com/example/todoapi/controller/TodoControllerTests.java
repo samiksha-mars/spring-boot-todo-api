@@ -144,7 +144,18 @@ class TodoControllerTests {
                         .content("""
                                 {"title": "", "completed": false}
                                 """))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Request validation failed"))
+                .andExpect(jsonPath("$.errors.title").value("title must not be blank"));
         assertThat(repository.count()).isZero();
+    }
+
+    @Test
+    void invalidCompletedParameterReturnsProblemDetail() throws Exception {
+        Todo todo = save("Buy milk", false);
+
+        mockMvc.perform(patch("/api/todos/{id}/completed", todo.getId()).param("value", "maybe"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
     }
 }
