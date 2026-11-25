@@ -61,6 +61,17 @@ class TodoControllerTests {
     }
 
     @Test
+    void completedDefaultsToFalseWhenOmitted() throws Exception {
+        mockMvc.perform(post("/api/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Buy milk"}
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.completed").value(false));
+    }
+
+    @Test
     void getReturnsTodoById() throws Exception {
         Todo todo = save("Buy milk", false);
 

@@ -9,6 +9,6 @@ public record TodoRequest(
         String title,
         @Size(max = 2000, message = "description must be at most 2000 characters")
         String description,
-        boolean completed
+        Boolean completed
 ) {
 }

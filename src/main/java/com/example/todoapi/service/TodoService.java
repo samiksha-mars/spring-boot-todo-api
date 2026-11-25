@@ -36,7 +36,7 @@ public class TodoService {
         Todo todo = new Todo();
         todo.setTitle(request.title());
         todo.setDescription(request.description());
-        todo.setCompleted(request.completed());
+        todo.setCompleted(Boolean.TRUE.equals(request.completed()));
         todo.setCreatedAt(Instant.now());
         todo.setUpdatedAt(Instant.now());
         repository.save(todo);
@@ -48,7 +48,7 @@ public class TodoService {
         Todo todo = repository.findById(id).orElseThrow();
         todo.setTitle(request.title());
         todo.setDescription(request.description());
-        todo.setCompleted(request.completed());
+        todo.setCompleted(Boolean.TRUE.equals(request.completed()));
         todo.setUpdatedAt(Instant.now());
         repository.save(todo);
         return toResponse(todo);
