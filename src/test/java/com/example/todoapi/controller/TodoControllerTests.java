@@ -72,6 +72,26 @@ class TodoControllerTests {
     }
 
     @Test
+    void acceptsDescriptionUpToTheValidatedLimit() throws Exception {
+        String description = "x".repeat(2000);
+
+        mockMvc.perform(post("/api/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Long one", "description": "%s"}
+                                """.formatted(description)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.description").value(description));
+        mockMvc.perform(post("/api/todos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Too long", "description": "%s"}
+                                """.formatted(description + "x")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.description").value("description must be at most 2000 characters"));
+    }
+
+    @Test
     void getReturnsTodoById() throws Exception {
         Todo todo = save("Buy milk", false);
 
