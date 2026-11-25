@@ -24,7 +24,9 @@ persisted to an in-memory H2 database.
 ```
 
 App starts on http://localhost:8080. H2 console: http://localhost:8080/h2-console
-(JDBC URL `jdbc:h2:mem:testdb`, user `sa`, empty password).
+(user `sa`, empty password). The database name is generated on each start, so copy the
+JDBC URL from the startup log line `H2 console available at '/h2-console'. Database
+available at 'jdbc:h2:mem:...'`.
 
 ## API
 
@@ -44,3 +46,13 @@ curl -X POST http://localhost:8080/api/todos \
   -H "Content-Type: application/json" \
   -d '{"title": "Write README", "description": "Document the API", "completed": false}'
 ```
+
+`description` (up to 2000 characters) and `completed` are optional; `completed` defaults
+to `false`.
+
+### Errors
+
+Errors are returned as RFC 7807 `ProblemDetail` JSON:
+
+- `400` for invalid input, with an `errors` object mapping each rejected field to its message
+- `404` when no todo has the given id
